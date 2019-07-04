@@ -1,7 +1,4 @@
-﻿// Copyright (c) Microsoft Corporation. All rights reserved.
-// Licensed under the MIT License.
-
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
 using EchoBot.Hubs;
@@ -19,8 +16,8 @@ namespace EchoBot.Bots {
 
 		protected override async Task OnMessageActivityAsync(ITurnContext<IMessageActivity> turnContext, CancellationToken cancellationToken) {
 			string message = turnContext.Activity.Text;
-			string userName = turnContext.Activity.Recipient.Name;
-			await turnContext.SendActivityAsync(MessageFactory.Text($"From {userName}: {message}"), cancellationToken);
+			string userName = turnContext.Activity.From.Name;
+			await turnContext.SendActivityAsync(MessageFactory.Text($"Command from {userName}: {message}"), cancellationToken);
 			await _hubContext.Clients.All.SendCoreAsync("ReceiveMessage", new object[] { userName, message }, cancellationToken);
 		}
 

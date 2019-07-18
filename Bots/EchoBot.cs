@@ -20,19 +20,14 @@ namespace EchoBot.Bots {
 			var messageInfo = new MessageInfo {
 				Text = turnContext.Activity.Text,
 				UserName = turnContext.Activity.From.Name,
-				ChanelId = turnContext.Activity.ChannelId
+				ChanelId = turnContext.Activity.ChannelId,
+				ChanelData = turnContext.Activity.ChannelData,
+				From = turnContext.Activity.From,
+				Conversation = turnContext.Activity.Conversation
 			};
 
 			Activity reply = MessageFactory.Text($"Command from {messageInfo.UserName}: {messageInfo.Text}");
 
-			reply.SuggestedActions = new SuggestedActions {
-				Actions = new List<CardAction> {
-					new CardAction { Title = "Help", Type = ActionTypes.ImBack, Value = "help" },
-					new CardAction { Title = "Start", Type = ActionTypes.ImBack, Value = "start" },
-					new CardAction { Title = "Stop", Type = ActionTypes.ImBack, Value = "stop" }
-				}
-			};
-			
 			await turnContext.SendActivityAsync(reply, cancellationToken);
 			await _hubContext.Clients.All.SendCoreAsync("ReceiveMessage", new object[] { messageInfo.UserName, JsonConvert.SerializeObject(messageInfo) }, cancellationToken);
 		}

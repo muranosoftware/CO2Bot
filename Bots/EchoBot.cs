@@ -20,15 +20,13 @@ namespace EchoBot.Bots {
 			var messageInfo = new MessageInfo {
 				Text = turnContext.Activity.Text,
 				UserName = turnContext.Activity.From.Name,
-				ChanelId = turnContext.Activity.ChannelId,
-				ChanelData = turnContext.Activity.ChannelData,
-				From = turnContext.Activity.From,
-				Conversation = turnContext.Activity.Conversation
+				UserId = turnContext.Activity.From.Id,
+				ConversationId = turnContext.Activity.Conversation.Id,
+				IsGroup = turnContext.Activity.Conversation.IsGroup
 			};
 
-			Activity reply = MessageFactory.Text($"Command from {messageInfo.UserName}: {messageInfo.Text}");
-
-			await turnContext.SendActivityAsync(reply, cancellationToken);
+			//Activity reply = MessageFactory.Text($"Command from {messageInfo.UserName}: {messageInfo.Text}");
+			//await turnContext.SendActivityAsync(reply, cancellationToken);
 			await _hubContext.Clients.All.SendCoreAsync("ReceiveMessage", new object[] { messageInfo.UserName, JsonConvert.SerializeObject(messageInfo) }, cancellationToken);
 		}
 
